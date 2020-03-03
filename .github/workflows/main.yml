@@ -11,13 +11,13 @@ jobs:
     - uses: actions/checkout@v2
     - name: create keystore file
       run: |
-        echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > ${HOME}/keystore.jks
+        echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > ~/keystore.jks
     - name: Build
       env:
         ALIAS: ${{ secrets.ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         KEY_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
-        KEY_STORE_FILE: ${{ env.HOME }}/keystore.jks
+        KEY_STORE_FILE: ~/keystore.jks
       run: |
         cd HackerNews
         nuget restore
