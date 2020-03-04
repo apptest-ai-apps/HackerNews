@@ -19,7 +19,9 @@ jobs:
       working-directory: ./HackerNews/HackerNews.iOS 
       env:
         CI: true
-      run: fastlane add_plugin souyuz 
+      run: |
+        bundle update --bundler
+        fastlane add_plugin souyuz 
     - name: Build development package using fastlane
       working-directory: ./HackerNews/HackerNews.iOS 
       env:
