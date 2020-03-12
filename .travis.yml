@@ -7,8 +7,6 @@ jobs:
     osx_image: xcode11.3
     install: |
       brew update
-      dotnet tool install --global boots
-      /Users/forcemax/.dotnet/tools/boots https://aka.ms/xamarin-android-commercial-d16-4-macos
     before_script: |
       cd HackerNews
       nuget restore
