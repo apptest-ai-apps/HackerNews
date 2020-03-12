@@ -1,22 +1,43 @@
 language: generic
 jobs:
   include:
+  - stage: build iOS and test
+    language: csharp
+    os: osx
+    osx_image: xcode11.3
+    install: |
+      brew update
+      dotnet tool install --global boots
+      /Users/forcemax/.dotnet/tools/boots https://aka.ms/xamarin-android-commercial-d16-4-macos
+    before_script: |
+      cd HackerNews
+      nuget restore
+      cd HackerNews.iOS 
+      bundle update --bundler
+      fastlane add_plugin souyuz
+    script: |
+      fastlane beta
+    after_success: |
+      cd ../..
+      git clone https://github.com/apptestai/ci_addon
+      export binary_path="HackerNews/HackerNews.iOS/bin/iPhone/Release/HackerNews.iOS.ipa"
+      export project_id='1137'
+      bash ./ci_addon/step.sh
+
   - stage: build android and test
     language: csharp
     os: osx
     osx_image: xcode11.3
-    before_script: |
+    install: |
       curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/android-sdk-installer -o android-sdk-installer
       curl -L https://raw.github.com/embarkmobile/android-sdk-installer/version-2/accept-licenses -o accept-licenses
       chmod u+x android-sdk-installer
       chmod u+x accept-licenses
       ./android-sdk-installer --dir=./android-sdk --install=build-tools-29.0.2,android-29,platform-tools --accept="android-sdk-license-e6a904e8|android-sdk-license-e6a904e8|android-sdk-license-e6a904e8"
       brew update
-      dotnet tool install --global boots > nul
-      boots https://aka.ms/xamarin-android-commercial-d16-4-macos
-      nvm install 12
-      npm install -g react-native-cli
-      npm install
+      dotnet tool install --global boots
+      /Users/forcemax/.dotnet/tools/boots https://aka.ms/xamarin-android-commercial-d16-4-macos
+    before_script: |
       openssl aes-256-cbc -K $encrypted_64e89481033b_key -iv $encrypted_64e89481033b_iv -in keystore.jks.md5.enc -out keystore.jks.md5 -d
       cat keystore.jks.md5 | base64 --decode > ${HOME}/keystore.jks
       cd HackerNews
