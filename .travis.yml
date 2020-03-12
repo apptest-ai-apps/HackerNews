@@ -1,27 +1,6 @@
 language: generic
 jobs:
   include:
-  - stage: build iOS and test
-    os: osx
-    osx_image: xcode11.3
-    before_script: |
-      nvm install 12
-      npm install -g react-native-cli
-      npm install
-      cd HackerNews
-      nuget restore
-      cd HackerNews.iOS 
-      bundle update --bundler
-      fastlane add_plugin souyuz
-    script: |
-      fastlane beta
-    after_success: |
-      cd ../..
-      git clone https://github.com/apptestai/ci_addon
-      export binary_path="HackerNews/HackerNews.iOS/bin/iPhone/Release/HackerNews.iOS.ipa"
-      export project_id='1137'
-      bash ./ci_addon/step.sh
-
   - stage: build android and test
     language: csharp
     os: osx
