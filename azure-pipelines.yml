@@ -6,10 +6,6 @@
 trigger:
 - master
 
-variables:
-  buildConfiguration: 'Release'
-  outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
-
 jobs:
   - job: build_android
     pool:
