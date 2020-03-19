@@ -29,9 +29,9 @@ jobs:
       displayName: nuget restore
       workingDirectory: ./HackerNews
     - bash: |
+        KEY_STORE_FILE="${HOME}/keystore.jks"
         msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidSigningKeyAlias=${ALIAS}" "/p:AndroidSigningKeyPass=${KEY_PASSWORD}" "/p:AndroidSigningKeyStore=${KEY_STORE_FILE}" "/p:AndroidSigningStorePass=${KEY_STORE_PASSWORD}"
       env:
-        KEY_STORE_FILE: ${HOME}/keystore.jks
         KEY_STORE_PASSWORD: $(KEY_STORE_PASSWORD)
         ALIAS: $(ALIAS)
         KEY_PASSWORD: $(KEY_PASSWORD)
