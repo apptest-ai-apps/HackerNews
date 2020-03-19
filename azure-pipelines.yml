@@ -1,0 +1,82 @@
+# Xamarin.Android
+# Build a Xamarin.Android project.
+# Add steps that test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xamarin
+
+trigger:
+- master
+
+variables:
+  buildConfiguration: 'Release'
+  outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
+
+jobs:
+  - job: build_android
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+    - script: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_12_0
+      displayName: 'Select the Xamarin SDK version'
+      enabled: false
+    - task: NuGetToolInstaller@1
+    - bash: |
+        echo "${SIGNING_KEY}" | base64 --decode > ${HOME}/keystore.jks
+      displayName: create android keystore
+      env:
+        SIGNING_KEY: $(SIGNING_KEY)
+    - bash: |
+        nuget restore
+      displayName: nuget restore
+      workingDirectory: ./HackerNews
+    - bash: |
+        msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidSigningKeyAlias=${ALIAS}" "/p:AndroidSigningKeyPass=${KEY_PASSWORD}" "/p:AndroidSigningKeyStore=${KEY_STORE_FILE}" "/p:AndroidSigningStorePass=${KEY_STORE_PASSWORD}"
+      env:
+        KEY_STORE_FILE: ${HOME}/keystore.jks
+        KEY_STORE_PASSWORD: $(KEY_STORE_PASSWORD)
+        ALIAS: $(ALIAS)
+        KEY_PASSWORD: $(KEY_PASSWORD)
+      displayName: build
+      workingDirectory: ./HackerNews/HackerNews.Droid
+    - task: apptestai-test@0
+      inputs:
+        access_key: '$(APPTEST_AI_ACCESS_KEY)'
+        project_id: '1134'
+        binary_path: 'HackerNews/HackerNews.Droid/bin/Release/com.minnick.HackerNews-Signed.apk'
+
+  - job: build_ios
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+    - script: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_12_0
+      displayName: 'Select the Xamarin SDK version'
+      enabled: false
+    - task: NuGetToolInstaller@1
+    - bash: |
+        nuget restore
+      displayName: nuget restore
+      workingDirectory: ./HackerNews
+    - bash: |
+        bundle update --bundler
+        fastlane add_plugin souyuz
+      displayName: Prepare build
+      workingDirectory: ./HackerNews/HackerNews.iOS
+      env:
+        CI: true
+    - bash: |
+        fastlane beta
+      displayName: build
+      workingDirectory: ./HackerNews/HackerNews.iOS
+      env:
+        APPLE_ID: $(APPLE_ID)
+        TEAM_ID: $(TEAM_ID)
+        APP_BUNDLE_ID: $(APP_BUNDLE_ID)
+        MATCH_PASSWORD: $(MATCH_PASSWORD)
+        FASTLANE_CERT_REPO: $(FASTLANE_CERT_REPO)
+        MATCH_GIT_BASIC_AUTHORIZATION: $(MATCH_GIT_BASIC_AUTHORIZATION)
+        MATCH_KEYCHAIN_NAME: $(MATCH_KEYCHAIN_NAME)
+        MATCH_KEYCHAIN_PASSWORD: $(MATCH_KEYCHAIN_PASSWORD)
+    - task: apptestai-test@0
+      inputs:
+        access_key: '$(APPTEST_AI_ACCESS_KEY)'
+        project_id: '1137'
+        binary_path: 'HackerNews/HackerNews.iOS/bin/iPhone/Release/HackerNews.iOS.ipa'
