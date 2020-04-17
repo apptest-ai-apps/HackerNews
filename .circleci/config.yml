@@ -10,10 +10,6 @@ jobs:
       - checkout
       - run:
           name: install brew cask
-          command: |
-            brew tap homebrew/cask-cask
-      - run:
-          name: install brew cask
           command: brew cask install xamarin xamarin-ios xamarin-studio
       - run:
           name: nuget restore
