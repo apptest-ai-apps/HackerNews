@@ -1,0 +1,42 @@
+version: 2.1
+orbs:
+  apptest-ai: apptestai/android-app-test@volatile
+
+jobs:
+  build-ios:
+    macos:
+      xcode: 11.3.1
+    steps:
+      - checkout
+      - run:
+          name: install brew cask
+          command: brew install caskroom/cask/brew-cask 
+      - run:
+          name: install brew cask
+          command: brew cask install xamarin xamarin-ios xamarin-studio
+      - run:
+          name: nuget restore
+          working_directory: ./HackerNews
+          command: nuget restore
+      - run:
+          name: Prepare build
+          working_directory: ./HackerNews/HackerNews.iOS
+          command: |
+            bundle update --bundler
+            fastlane add_plugin souyuz
+      - run:
+          name: build
+          working_directory: ./HackerNews/HackerNews.iOS
+          command: fastlane beta
+      - apptest-ai/run-test:
+          binary_path: "HackerNews/HackerNews.iOS/bin/iPhone/Release/HackerNews.iOS.ipa"
+          project_id: "1137"
+      - store_artifacts:
+          path: test-results
+      - store_test_results:
+          path: test-results
+
+workflows:
+    build-and-test:
+      jobs:
+        - build-ios
