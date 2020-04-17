@@ -10,7 +10,9 @@ jobs:
       - checkout
       - run:
           name: install brew cask
-          command: brew install caskroom/cask/brew-cask 
+          command: |
+            brew tap caskroom/cask
+            brew tap caskroom/versions
       - run:
           name: install brew cask
           command: brew cask install xamarin xamarin-ios xamarin-studio
