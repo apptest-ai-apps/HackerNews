@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: install xamarin 
-          command: brew cask install xamarin xamarin-android visual-studio android-sdk
+          command: brew cask install adoptopenjdk8 android-sdk xamarin xamarin-android visual-studio
       - run:
           name: create keystore file
           command: echo "$SIGNING_KEY" | base64 --decode > ${HOME}/keystore.jks
