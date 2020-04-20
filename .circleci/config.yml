@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: install brew cask
-          command: brew cask install xamarin xamarin-android visual-studio
+          command: brew cask install xamarin xamarin-android visual-studio android-sdk
       - run:
           name: create keystore file
           command: echo "$SIGNING_KEY" | base64 --decode > ${HOME}/keystore.jks
@@ -21,7 +21,10 @@ jobs:
       - run:
           name: build
           working_directory: ./HackerNews/HackerNews.Droid
-          command: msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidSigningKeyAlias=$ALIAS" "/p:AndroidSigningKeyPass=$KEY_PASSWORD" "/p:AndroidSigningKeyStore=$KEY_STORE_FILE" "/p:AndroidSigningStorePass=$KEY_STORE_PASSWORD"
+          command: |
+            ANDROID_SDK="$(brew --prefix)/share/android-sdk"
+            KEY_STORE_FILE="${HOME}/keystore.jks"
+            msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidSigningKeyAlias=$ALIAS" "/p:AndroidSigningKeyPass=$KEY_PASSWORD" "/p:AndroidSigningKeyStore=$KEY_STORE_FILE" "/p:AndroidSigningStorePass=$KEY_STORE_PASSWORD"
       - apptest-ai/run-test:
           binary_path: "HackerNews/HackerNews.Droid/bin/Release/com.minnick.HackerNews-Signed.apk"
           project_id: "1134"
