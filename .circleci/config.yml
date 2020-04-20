@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: install brew cask
-          command: brew cask install xamarin xamarin-ios
+          command: brew cask install xamarin xamarin-ios visual-studio
       - run:
           name: nuget restore
           working_directory: ./HackerNews
