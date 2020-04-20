@@ -9,8 +9,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: install android-sdk
+          command: |
+            brew cask install android-sdk
+            /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-29" "build-tools;29.0.2" "platform-tools"
+      - run:
           name: install xamarin 
-          command: brew cask install adoptopenjdk8 android-sdk xamarin xamarin-android visual-studio
+          command: brew cask install xamarin xamarin-android visual-studio
       - run:
           name: create keystore file
           command: echo "$SIGNING_KEY" | base64 --decode > ${HOME}/keystore.jks
