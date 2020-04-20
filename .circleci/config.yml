@@ -3,6 +3,34 @@ orbs:
   apptest-ai: apptestai/android-app-test@volatile
 
 jobs:
+  build-android:
+    macos:
+      xcode: 11.3.1
+    steps:
+      - checkout
+      - run:
+          name: install brew cask
+          command: brew cask install xamarin xamarin-android visual-studio
+      - run:
+          name: create keystore file
+          command: echo "$SIGNING_KEY" | base64 --decode > ${HOME}/keystore.jks
+      - run:
+          name: nuget restore
+          working_directory: ./HackerNews
+          command: nuget restore
+      - run:
+          name: build
+          working_directory: ./HackerNews/HackerNews.Droid
+          command: |
+            msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidSigningKeyAlias=$ALIAS" "/p:AndroidSigningKeyPass=$KEY_PASSWORD" "/p:AndroidSigningKeyStore=$KEY_STORE_FILE" "/p:AndroidSigningStorePass=$KEY_STORE_PASSWORD"
+      - apptest-ai/run-test:
+          binary_path: "HackerNews/HackerNews.Droid/bin/Release/com.minnick.HackerNews-Signed.apk"
+          project_id: "1134
+      - store_artifacts:
+          path: test-results
+      - store_test_results:
+          path: test-results
+
   build-ios:
     macos:
       xcode: 11.3.1
@@ -36,4 +64,5 @@ jobs:
 workflows:
     build-and-test:
       jobs:
+        - build-android
         - build-ios
