@@ -12,7 +12,7 @@ jobs:
           name: install android-sdk
           command: |
             brew cask install android-sdk
-            yes | /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" "ndk;21.0.6113669" || true
+            yes | /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" "cmake;3.10.2.4988404" || true
       - run:
           name: install xamarin 
           command: brew cask install xamarin xamarin-android visual-studio
