@@ -6,7 +6,10 @@ jobs:
     osx_image: xcode11.3
     install: |
       brew cask install xamarin xamarin-ios visual-studio
-      brew cask reinstall mono-mdk-for-visual-studio
+      curl -L https://get.rvm.io | bash -s stable
+      rvm install ruby-2.6
+      rvm use ruby-2.6.3
+      rvm --default use 2.6.3
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       cd HackerNews
@@ -31,7 +34,6 @@ jobs:
       brew cask install android-sdk
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" || true
       brew cask install xamarin xamarin-android visual-studio mono-mdk
-      brew cask reinstall mono-mdk-for-visual-studio
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       openssl aes-256-cbc -K $encrypted_64e89481033b_key -iv $encrypted_64e89481033b_iv -in keystore.jks.md5.enc -out keystore.jks.md5 -d
