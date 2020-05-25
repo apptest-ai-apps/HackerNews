@@ -6,7 +6,7 @@ jobs:
     osx_image: xcode11.3
     install: |
       echo 'export PATH="/usr/local/opt/ruby/bin:$PATH"' >> ~/.bash_profile
-      export PATH="/usr/local/opt/ruby/bin:$PATH"
+      gem install -NV fastlane bundler
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       export PATH="/usr/local/opt/ruby/bin:$PATH"
