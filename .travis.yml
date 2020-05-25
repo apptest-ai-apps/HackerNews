@@ -6,8 +6,6 @@ jobs:
     osx_image: xcode11.3
     install: |
       brew cask install xamarin xamarin-ios visual-studio
-    before_script: |
-      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       curl -L https://get.rvm.io | bash -s stable
       rvm install ruby-2.6
       rvm use ruby-2.6
@@ -15,6 +13,9 @@ jobs:
       rvm get head --auto-dotfiles
       gem install fastlane -NV
       gem install bundler
+    before_script: |
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
       cd HackerNews
       nuget restore
       cd HackerNews.iOS
@@ -23,6 +24,7 @@ jobs:
       fastlane add_plugin souyuz
     script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
       fastlane beta
     after_success: |
       cd ../..
