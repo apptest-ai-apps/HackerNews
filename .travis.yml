@@ -11,6 +11,7 @@ jobs:
       rvm use ruby-2.6.3
       rvm --default use 2.6.3
       gem install fastlane -NV
+      gem install bundler
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       cd HackerNews
