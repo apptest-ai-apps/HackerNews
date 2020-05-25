@@ -5,15 +5,23 @@ jobs:
     os: osx
     osx_image: xcode11.3
     install: |
-      brew cask install xamarin xamarin-ios visual-studio
-      brew cask reinstall mono-mdk-for-visual-studio
+      echo 'export PATH="/usr/local/opt/ruby/bin:$PATH"' >> ~/.bash_profile
+      export PATH="/usr/local/opt/ruby/bin:$PATH"
     before_script: |
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      export PATH="/usr/local/opt/ruby/bin:$PATH"
+      echo $PATH
       cd HackerNews
       nuget restore
-      cd HackerNews.iOS 
+      cd HackerNews.iOS
+      bundle install
       bundle update --bundler
       fastlane add_plugin souyuz
+      brew cask install xamarin xamarin-ios visual-studio
     script: |
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      export PATH="/usr/local/opt/ruby/bin:$PATH"
+      echo $PATH
       fastlane beta
     after_success: |
       cd ../..
@@ -29,13 +37,14 @@ jobs:
       brew cask install android-sdk
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" || true
       brew cask install xamarin xamarin-android visual-studio mono-mdk
-      brew cask reinstall mono-mdk-for-visual-studio
     before_script: |
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       openssl aes-256-cbc -K $encrypted_64e89481033b_key -iv $encrypted_64e89481033b_iv -in keystore.jks.md5.enc -out keystore.jks.md5 -d
       cat keystore.jks.md5 | base64 --decode > ${HOME}/keystore.jks
       cd HackerNews
       nuget restore
     script: |
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       ANDROID_HOME="/usr/local/share/android-sdk"
       ANDROID_NDK_HOME="/usr/local/share/android-sdk/ndk-bundle"
       ANDROID_NDK_PATH="/usr/local/share/android-sdk/ndk-bundle"
@@ -63,4 +72,3 @@ env:
   - secure: cjs/U4zbub5Im9nBGS3sWs8QE0osaa/4sWUivX/MCygebrY/I8H3Oq2U4/SU1id9AGtRVniKj1CIlHP1Ci3FwKGEGPVFHJYbjZdcXnyXVdQcSYXGTFZl1tdi0gdRutN+RUrq/IG3GxvYRvJFfgdExXptLuaGQAoPcbDRkLDKF2611jDa9PHjOyc/zS1aFdfkubyRfFS4h7hEMBER2lv6s07yQ/tzjXsUBysFo7K27FXxg0fd0KJRqx1njGsz+8RmY/9Jbdn96oMAp8lqzreaLKMrAyovvvQNiOXL9BVtwJI40S9fQs8FTs2zo1+FqPYPCPBgJFnDkVd5ADZBeEd1saIXK9SKyhry+re/g7c2Dj4NU/vgj3Gd0xrs9cVU1njI0mknMf6+ut7kEf7jpD5gQ17mxdvB5b0LnLUBD8fPbOkL3kJ1bvsktFWkngLP4Ikp6kxNl+73+TefO9eVb6BQ5A4ERL6XOsZ2yu8pZElZ5/GvaD7ox30FSySf5GuhN0pfNcmUHYHQ7Ob71RUqKUAQjtJsUe1V8neqG+/m3Dc3rb+fzaI7HgREewTJVb4frNkquyGdQJ9u0c5eH8aOP9SiQVYZmqChEr6RoMxBDinHZXsr7Vl+C7ofibGCYwvtp2BdSiyo2sYi4Joe1t3MebjyhcpppFBP+LB0ZwqM9YylhIQ=
   - secure: gUxRx1JcksMtFa6mC3mW19JHfnz1HKUuO03glZwyKUT/FgLFhiXl3Ke9VSy3uq0scrtZlw4raajvzY7LL2KL9OAYwD0QRdT2KY/AEGMlnczdLplvPE96BPfEdxcrqXK1rKZoqYup+D4MRkoeTli+OqyEAnIoxonC8Z8bezL8MrXaeF5yOQivMmALyF113a2KNPwQg3COrF4y4GoYAFe+ZmDXOszXFXYNbbdsEwSMJ9j/R6w27whCVpPCCi/NukySpezPLz4PoqsxunGDX0/dCjg571l50zmpUV9+Jrmn8lmL/+IRS3aXg2gMwJwbCDViQ7gLVgIQcjs+uGqXsZE4xgu3nAFq2IYkonP/nsI9x24IG14nrBJhr5oBbJRZRmuYOh/IApbMBBvjtJAxq2vw/F4WhseSmXKoLVorH/RZVr05dJ5Bdhu7ShTI/0Mw/N0S3P0B8E/XqFDXXbtQxyXFraix/6Fdz2E129zNlQsioQnOuBQ/+bqnVr3iwSMSQQS/+/QC64UkgpwUmzWcw3KvWtSdIF7p6b7+c7mAZZHEBfhulpmPNba6jeHDdjbUZMNV3zwae2q5nfIocuL70e+2HJ/OuUlHwXUo6McwKTUwEpgFM80LaRMlRYpukTwgVU5BWv3dUfWuAq+mi3NPPk02YH25/ZHMPZPs7YENBa2MNvM=
   - secure: MrODFtpdpD+9NetJYfh8B4FfYA7PKYQeBxJVloGe4TggjLa87ZRplo09vlZSseJbl9Vm5+/wkS9ELNfe3r6GbI9k/BNIPkzSHK4mJvQ9I3vbZceZxSfoitUK8aPDhp6emUJ9+O/9nbPl8dp8mjbVw6Ib1yjymsd2qUJ6fj2fI2rCPiof7su219q5Rv6Djvkz+a3WRKSq2D+9J1j5koHDkYul3DVrWREB/YWT8mgGJ037svOApV43FAVHXSmIO5FjGFOC+QDXY4Y5Dx/hSJdCMNZa3JJModQCRL1PrN/yA6wVaYhvEiQt9Ij86P7gyDjW5SPfPHuCaY1oy8fOnlt36ylpJaqJ10ynTtFth5a7KhjYl57EsmXtW94nZ2ELeFWxNM1yaczpa+r4SqPFG0C/DJJ4qp00oWbP/LqRWbC5sdKbv8bie0pIXtmiNhc9/MDz1h6CBNXpdsyCqIAmgeaQccM6i1tEryN7smqdrVPUXGP0IjwAduDmcaE/f13dp5uK7YrzG0PFXLSpKyB6cUWDngpk7LI6xxpzm/J/7QZTyzoqVde9QI7kM1SZ+D9uMOeBNEaIdZN+AgFTjj6dy7SXS8KybaTeujbTZ/q5wsGFkyGbrjy56MyUaqZqGRUukq5m9YsCaTC1YaUqrlenuKQhYLLTbg0Jz//YBXit6aJE1vM=
-
