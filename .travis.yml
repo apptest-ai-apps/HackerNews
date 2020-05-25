@@ -8,15 +8,16 @@ jobs:
       brew cask install xamarin xamarin-ios visual-studio
       curl -L https://get.rvm.io | bash -s stable
       rvm install ruby-2.6
-      rvm use ruby-2.6.3
-      rvm --default use 2.6.3
+      rvm use ruby-2.6
+      rvm --default use 2.6
       gem install fastlane -NV
       gem install bundler
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       cd HackerNews
       nuget restore
-      cd HackerNews.iOS 
+      cd HackerNews.iOS
+      bundle install
       bundle update --bundler
       fastlane add_plugin souyuz
     script: |
