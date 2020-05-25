@@ -6,7 +6,7 @@ jobs:
     osx_image: xcode11.3
     install: |
       fastlane env
-      gem install -NV fastlane bundler
+      cd HackerNews/HackerNews.iOS ; bundle install; cd ../..
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       export PATH="/usr/local/opt/ruby/bin:$PATH"
@@ -14,7 +14,6 @@ jobs:
       cd HackerNews
       nuget restore
       cd HackerNews.iOS
-      bundle install
       bundle update --bundler
       fastlane add_plugin souyuz
       brew cask install xamarin xamarin-ios visual-studio
