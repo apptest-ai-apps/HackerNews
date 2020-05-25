@@ -5,13 +5,14 @@ jobs:
     os: osx
     osx_image: xcode11.3
     install: |
-      brew cask install xamarin xamarin-ios visual-studio
       curl -L https://get.rvm.io | bash -s stable
       rvm install ruby-2.6
       rvm use ruby-2.6
-      rvm --default use 2.6
+      rvm --default 2.6
+      rvm get head --auto-dotfiles
       gem install fastlane -NV
       gem install bundler
+      brew cask install xamarin xamarin-ios visual-studio
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       cd HackerNews
