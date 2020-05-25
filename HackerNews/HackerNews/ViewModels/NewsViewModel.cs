@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using AsyncAwaitBestPractices;
 using AsyncAwaitBestPractices.MVVM;
 using HackerNews.Shared;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace HackerNews
@@ -16,6 +18,7 @@ namespace HackerNews
     public class NewsViewModel : BaseViewModel
     {
         readonly WeakEventManager<string> _pullToRefreshEventManager = new WeakEventManager<string>();
+        readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         bool _isListRefreshing;
         ICommand? _refreshCommand;
@@ -48,11 +51,11 @@ namespace HackerNews
 
             try
             {
-                await foreach (var story in GetTopStories(StoriesConstants.NumberOfStories))
+                await foreach (var story in GetTopStories(StoriesConstants.NumberOfStories).ConfigureAwait(false))
                 {
                     try
                     {
-                        story.TitleSentimentScore = await TextAnalysisService.GetSentiment(story.Title);
+                        story.TitleSentiment = await TextAnalysisService.GetSentiment(story.Title).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -85,11 +88,12 @@ namespace HackerNews
                 var completedGetStoryTask = await Task.WhenAny(getTopStoryTaskList).ConfigureAwait(false);
                 getTopStoryTaskList.Remove(completedGetStoryTask);
 
-                yield return await completedGetStoryTask.ConfigureAwait(false);
+                var story = await completedGetStoryTask.ConfigureAwait(false);
+                yield return story;
             }
         }
 
-        void InsertIntoSortedCollection<T>(in ObservableCollection<T> collection, in Comparison<T> comparison, in T modelToInsert)
+        void InsertIntoSortedCollection<T>(ObservableCollection<T> collection, Comparison<T> comparison, T modelToInsert)
         {
             if (collection.Count is 0)
             {
@@ -108,16 +112,15 @@ namespace HackerNews
 
                     index++;
                 }
+
+                collection.Insert(index, modelToInsert);
             }
         }
 
         //Ensure Observable Collection is thread-safe https://codetraveler.io/2019/09/11/using-observablecollection-in-a-multi-threaded-xamarin-forms-application/
         void ObservableCollectionCallback(IEnumerable collection, object context, Action accessMethod, bool writeAccess)
         {
-            lock (collection)
-            {
-                accessMethod?.Invoke();
-            }
+            MainThread.BeginInvokeOnMainThread(accessMethod);
         }
 
         void OnPullToRefreshFailed(string message) => _pullToRefreshEventManager.HandleEvent(this, message, nameof(PullToRefreshFailed));
