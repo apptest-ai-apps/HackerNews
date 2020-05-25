@@ -10,6 +10,7 @@ jobs:
       rvm install ruby-2.6
       rvm use ruby-2.6.3
       rvm --default use 2.6.3
+      gem install fastlane -NV
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       cd HackerNews
