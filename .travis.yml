@@ -5,14 +5,17 @@ jobs:
     os: osx
     osx_image: xcode11.3
     install: |
-      brew cask install xamarin xamarin-ios visual-studio
+      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       fastlane env
+      bundle env
       echo $PATH
       cd HackerNews/HackerNews.iOS ; bundle install; cd ../..
     before_script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       fastlane env
+      bundle env
       echo $PATH
+      brew cask install xamarin xamarin-ios visual-studio
       cd HackerNews
       nuget restore
       cd HackerNews.iOS
@@ -21,6 +24,7 @@ jobs:
     script: |
       [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
       fastlane env
+      bundle env
       echo $PATH
       fastlane beta
     after_success: |
