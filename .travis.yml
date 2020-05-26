@@ -35,13 +35,12 @@ jobs:
       cat keystore.jks.md5 | base64 --decode > ${HOME}/keystore.jks
       cd HackerNews
       nuget restore
-      cd HackerNews.Droid
-      bundle install 
     script: |
       ANDROID_HOME="/usr/local/share/android-sdk"
       ANDROID_NDK_HOME="/usr/local/share/android-sdk/ndk-bundle"
       ANDROID_NDK_PATH="/usr/local/share/android-sdk/ndk-bundle"
       KEY_STORE_FILE="${HOME}/keystore.jks"
+      cd HackerNews.Droid
       msbuild "HackerNews.Droid.csproj" "/t:SignAndroidPackage" "/p:Configuration=Release" "/p:AndroidKeyStore=true" "/p:AndroidNdkDirectory=$ANDROID_NDK_PATH" "/p:AndroidSdkDirectory=$ANDROID_HOME" "/p:AndroidSigningKeyAlias=$ALIAS" "/p:AndroidSigningKeyPass=$KEY_PASSWORD" "/p:AndroidSigningKeyStore=$KEY_STORE_FILE" "/p:AndroidSigningStorePass=$KEY_STORE_PASSWORD"
     after_success: |
       cd ../..
