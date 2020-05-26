@@ -32,7 +32,7 @@ jobs:
       brew cask install android-sdk > /dev/null
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager --licenses > /dev/null
       /usr/local/share/android-sdk/tools/bin/sdkmanager --sdk_root=/usr/local/share/android-sdk "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" > /dev/null
-      brew cask install xamarin xamarin-android visual-studio > /dev/null
+      brew cask install xamarin xamarin-android visual-studio
     before_script: |
       export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
       openssl aes-256-cbc -K $encrypted_64e89481033b_key -iv $encrypted_64e89481033b_iv -in keystore.jks.md5.enc -out keystore.jks.md5 -d
