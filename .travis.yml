@@ -31,7 +31,7 @@ jobs:
       export PATH="$JAVA_HOME/bin:$PATH"
       brew cask install android-sdk > /dev/null
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager --licenses > /dev/null
-      /usr/local/share/android-sdk/tools/bin/sdkmanager --sdk_root=/usr/local/share/android-sdk "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" || true
+      /usr/local/share/android-sdk/tools/bin/sdkmanager --sdk_root=/usr/local/share/android-sdk "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" > /dev/null
       brew cask install xamarin xamarin-android visual-studio > /dev/null
     before_script: |
       export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
