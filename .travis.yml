@@ -5,26 +5,15 @@ jobs:
     os: osx
     osx_image: xcode11.3
     install: |
-      fastlane env
-      bundle env
-      echo $PATH
-      cd HackerNews/HackerNews.iOS ; bundle install; cd ../..
       brew cask install xamarin xamarin-ios visual-studio
     before_script: |
       export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
-      fastlane env
-      bundle env
-      echo $PATH
       cd HackerNews
       nuget restore
       cd HackerNews.iOS
-      bundle update --bundler
+      bundle install 
       fastlane add_plugin souyuz
     script: |
-      export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
-      fastlane env
-      bundle env
-      echo $PATH
       fastlane beta
     after_success: |
       cd ../..
@@ -41,13 +30,13 @@ jobs:
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" || true
       brew cask install xamarin xamarin-android visual-studio mono-mdk
     before_script: |
-      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
       openssl aes-256-cbc -K $encrypted_64e89481033b_key -iv $encrypted_64e89481033b_iv -in keystore.jks.md5.enc -out keystore.jks.md5 -d
       cat keystore.jks.md5 | base64 --decode > ${HOME}/keystore.jks
       cd HackerNews
       nuget restore
     script: |
-      [ -x /usr/libexec/path_helper ] && eval $(/usr/libexec/path_helper -s)
+      export PATH="/Library/Frameworks/Mono.framework/Versions/Current/Commands:$PATH"
       ANDROID_HOME="/usr/local/share/android-sdk"
       ANDROID_NDK_HOME="/usr/local/share/android-sdk/ndk-bundle"
       ANDROID_NDK_PATH="/usr/local/share/android-sdk/ndk-bundle"
