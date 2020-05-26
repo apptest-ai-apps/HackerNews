@@ -26,7 +26,7 @@ jobs:
     os: osx
     osx_image: xcode11.3
     install: |
-      brew cask install adoptopenjdk8
+      brew cask install homebrew/cask-versions/adoptopenjdk8
       brew cask install android-sdk
       yes | /usr/local/share/android-sdk/tools/bin/sdkmanager --sdk_root=/usr/local/share/android-sdk "platforms;android-28" "build-tools;28.0.3" "platform-tools" "ndk-bundle" || true
       brew cask install xamarin xamarin-android visual-studio
